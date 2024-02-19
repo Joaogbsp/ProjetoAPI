@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///livros.db'  # SQLite usado para simplicidade, pode ser alterado para MySQL ou outro
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///livros.db'
 
 db = SQLAlchemy(app)
 
