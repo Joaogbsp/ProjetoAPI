@@ -1,10 +1,10 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///livros.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///livros.db' 
+
 
 db = SQLAlchemy(app)
 
@@ -18,6 +18,7 @@ class Livro(db.Model):
     emprestou = db.Column(db.Boolean, nullable=False)
     prazo_devolucao = db.Column(db.String(10), nullable=True)
 
+    
 @app.route('/livros/<int:livro_id>', methods=['GET'])
 def obter_livro_por_id(livro_id):
     livro = Livro.query.get(livro_id)
@@ -42,17 +43,12 @@ def obter_livro_por_id(livro_id):
 def cadastrar_livro():
     data = request.get_json()
     novo_livro = Livro(**data)
-
-    # Verifique se o livro está emprestado e defina prazo_devolucao
-    if not novo_livro.emprestou:
-        novo_livro.prazo_devolucao = None
-
     db.session.add(novo_livro)
     db.session.commit()
-
     return jsonify({'mensagem': 'Livro cadastrado com sucesso!'}), 201
 
 @app.route('/livros', methods=['GET'])
+
 def buscar_livros():
     livros = Livro.query.all()
     resultado = []
@@ -69,24 +65,20 @@ def buscar_livros():
     return jsonify(resultado)
 
 @app.route('/livros/<int:livro_id>', methods=['PUT'])
+
 def atualizar_livro(livro_id):
     livro = Livro.query.get(livro_id)
     if not livro:
         return jsonify({'mensagem': 'Livro não encontrado'}), 404
-
     dados_atualizados = request.get_json()
     for campo, valor in dados_atualizados.items():
         setattr(livro, campo, valor)
-
-    # Verifique se o livro está emprestado e defina prazo_devolucao
-    if not livro.emprestou:
-        livro.prazo_devolucao = None
-
     db.session.commit()
 
     return jsonify({'mensagem': 'Livro atualizado com sucesso'})
 
 @app.route('/livros/<int:livro_id>', methods=['DELETE'])
+
 def excluir_livro(livro_id):
     livro = Livro.query.get(livro_id)
 
